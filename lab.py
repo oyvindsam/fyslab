@@ -5,11 +5,17 @@ import iptrack as ip
 data_folder = "data/"
 out_folder = "out/"
 
-if __name__ == "__main__":
-    for filename in os.listdir(os.getcwd() + "/" + data_folder):
-        print(filename)
-        poly = ip.iptrack(data_folder + filename)
 
-        f = open(out_folder + filename + "_iptrack", "w+")
-        f.write(poly.__str__())
-        f.close()
+# Returns list<np.array>
+def get_iptrack():
+    data = {}  # 'filename': string -> (tracker_data, iptrack_data): tuple
+    for filename in os.listdir(os.getcwd() + "/" + data_folder):
+        data[filename] = ip.iptrack(data_folder + filename)
+
+    return data
+
+if __name__ == "__main__":
+    for filename, data in get_iptrack().items():
+        print(filename)
+        x_start = data[0][0][1]
+
