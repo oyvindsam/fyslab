@@ -20,21 +20,34 @@ def get_iptrack():
 
 
 def curvefit():
+
+    def checkrange(data):
+        if data[i - 5][2] < data[i][2] \
+               and data[i - 4][2] < data[i][2] \
+               and data[i - 3][2] < data[i][2] \
+               and data[i - 2][2] < data[i][2] \
+               and data[i - 1][2] < data[i][2] \
+               and data[i + 1][2] < data[i][2] \
+               and data[i + 2][2] < data[i][2] \
+               and data[i + 3][2] < data[i][2] \
+               and data[i + 4][2] < data[i][2] \
+               and data[i + 5][2] < data[i][2]:
+            return True
+
     for filename, data in get_iptrack().items():
         print(filename)
         data = data[0]
-        print(data)
         x_max, y_max = data[0][1], data[0][2]
         max_cor = np.array([(x_max, y_max)])
-        np.append(max_cor, [(x_max, y_max)], axis=0)
-        print(max_cor)
 
+        for i in range(5, len(data) -5):
 
-        xlast, ylast = x_max, y_max
-        xnext, ynext = 0, 0
-        for i in range(len(data) -3):
-           if data[i][2] < ylast:
-               np.append(max_cor, [(data[i][1], data[i][2])], axis=0)
+            if (checkrange(data)):
+                max_cor = np.append(max_cor, [(data[i][1], data[i][2])], axis=0)
+
+        print("maxcor: ", max_cor)
+        print(len(max_cor))
+
 
 #b = curvefit
 
