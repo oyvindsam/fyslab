@@ -19,34 +19,27 @@ def get_iptrack():
     return data
 
 
-def curvefit():
+def curvefit(coordinates: np.array):
 
-    def checkrange(data):
-        if data[i - 5][2] < data[i][2] \
-               and data[i - 4][2] < data[i][2] \
-               and data[i - 3][2] < data[i][2] \
-               and data[i - 2][2] < data[i][2] \
-               and data[i - 1][2] < data[i][2] \
-               and data[i + 1][2] < data[i][2] \
-               and data[i + 2][2] < data[i][2] \
-               and data[i + 3][2] < data[i][2] \
-               and data[i + 4][2] < data[i][2] \
-               and data[i + 5][2] < data[i][2]:
-            return True
+    data = coordinates
+    # compare values before and after current value to check if current is the topmost.
+    def checkrange(data, n, i):
+        for k in range(i - n, i + n):
+            if data[k][2] > data[i][2]:
+                return False
+        return True
 
-    for filename, data in get_iptrack().items():
-        print(filename)
-        data = data[0]
-        x_max, y_max = data[0][1], data[0][2]
-        max_cor = np.array([(x_max, y_max)])
+    # get the index of the point with the highest y-value in the first 15 elements
+    max_index = np.argmax(np.max(data[:15, [2]], axis=1))
+    x_max, y_max = data[max_index][1], data[max_index][2]
+    max_cor = np.array([(x_max, y_max)])
 
-        for i in range(5, len(data) -5):
+    # we already have the highest coordinates, so just start at 20.
+    for i in range(20, len(data) -5):
+        if checkrange(data, 5, i):
+            max_cor = np.append(max_cor, [(data[i][1], data[i][2])], axis=0)
 
-            if (checkrange(data)):
-                max_cor = np.append(max_cor, [(data[i][1], data[i][2])], axis=0)
-
-        print("maxcor: ", max_cor)
-        print(len(max_cor))
+    return max_cor
 
 
 #b = curvefit
@@ -69,4 +62,11 @@ def euler():
 if __name__ == "__main__":
     print("whoop \n\n")
 
-    curvefit()
+    iptrack_data = get_iptrack()
+    n = iptrack_data.keys()
+
+
+    for filename, data in iptrack_data.items():
+        print(filename)
+        print(curvefit(data[0]))
+
