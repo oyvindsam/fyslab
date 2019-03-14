@@ -10,6 +10,11 @@ data_folder = "data/"
 out_folder = "out/"
 
 
+def save_data(filename, string):
+    f = open(out_folder + filename, "w+")
+    f.write(string)
+    f.close()
+
 # Returns dict{'filename': (tracker_data: np.array, iptrack: np.array)}
 def get_data():
     data = {}  # 'filename': string -> (tracker_data, iptrack_data): tuple
@@ -60,7 +65,8 @@ def acc(alpha, c, v, m):
     return acc
 
 def euler(coordinates, iptrack, h):
-    xn = coordinates[0][1]
+    xn = coordinates[0][1]  # startx
+    vn = 0
 
     approx = np.array([(xn, 0.)])
 
@@ -70,7 +76,7 @@ def euler(coordinates, iptrack, h):
 
 
         # TODO: whaaat ----------------------------------
-        vn1 = dydx + h*d2ydx2
+        vn = vn + h*acc(alpha, )
         xn = xn + abs(vn1) * np.cos(alpha)
         yn = y + h*dydx
         # -----------------------------------------------
@@ -83,8 +89,9 @@ def euler(coordinates, iptrack, h):
 if __name__ == "__main__":
     print("whoop \n\n")
 
-    CURVEFIT = False
-    EULER = True
+    CURVEFIT = True
+    EULER = False
+    m = 0.0302
 
     data = get_data()
     filenames = data.keys()
@@ -99,8 +106,16 @@ if __name__ == "__main__":
             #std = np.sqrt(np.diag(covar))
             a, b = fit[0], fit[1]
 
-            print("\n\nA: %s\nb: %s " % (fit[0], fit[1]))
-            print("covar: ", covar)
+            c = 2*m*b
+
+            s = """%s\na: %s\nb: %s\nc: %s\ncovar: %s 
+            
+            """ % (filename, a, b, c, covar)
+
+            print("\n\nA: %s\nb: %s\nc: %s " % (fit[0], fit[1], c))
+            print("covar: ", covar.__str__())
+
+            save_data(filename + "_curvefit", s)
 
     if EULER:
         filename = '51.txt'
@@ -109,6 +124,6 @@ if __name__ == "__main__":
         tracker_data = data[filename][0]
         iptrack = data[filename][1]
         maxvalues = extract_maxvalues(tracker_data)
-        approx = euler(maxvalues, iptrack, 0.005)
+        approx = euler(maxvalues, iptrack, 0.001)
 
         print(approx)
