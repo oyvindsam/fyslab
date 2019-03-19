@@ -169,15 +169,13 @@ def v_prime(v,c,alpha):
     g = 9.8214675
     return (5/7)*(g*np.sin(alpha) - ((c * v)/m))
 
-def euler(x_n,y_n, v_abs, c, poly):
+def euler(x_n, v_abs, c, poly):
     dt = 0.01
     alpha = truevalues.trvalues(poly,x_n)[3]
     v_abs_next = v_abs + dt*((5/7) * v_prime(v_abs,c,alpha))
     vx_next = v_abs_next * np.cos(alpha)
-    vy_next = (v_abs_next * np.sin(alpha)) + ((v_abs**2)/truevalues.trvalues(poly,x_n)[4])
     x_next = x_n + (dt * (vx_next))
-    y_next = y_n + (dt * vy_next)
-    return x_next, y_next, v_abs_next
+    return x_next, v_abs_next
 
 
 true_x = []
@@ -207,17 +205,15 @@ v_abs_next = 0
 x_next = 0.6445934164187707
 y_next = 0.5016737029272254
 x_array = []
-y_array = []
 
 tracker_polynomial = iptrack.iptrack("data/45.txt")
 
-for i in range(2000):
-    x_next, y_next, v_abs_next = euler(x_next, y_next, v_abs_next, c, tracker_polynomial)
-    x_array.append(x_next)
-    y_array.append(y_next)
-x = np.array(x_array)
-y = np.array(y_array)
 
+for i in range(2000):
+    x_next, v_abs_next = euler(x_next, v_abs_next, c, tracker_polynomial)
+    x_array.append(x_next)
+x = np.array(x_array)
+y = truevalues.trvalues(tracker_polynomial,x)[0]
 
 """
 f = open("out/eulerXYResult.txt", "w+")
@@ -266,10 +262,14 @@ f.write("]")
 f.close()
 """
 t = np.linspace(0,20, 2000)
-plt.plot(t,true_x_array, label = "truex(t)")
-#plt.plot(t, true_y_array, label = "truey(t)")
-plt.plot(t, x, label = "estx(t)")
-#plt.plot(t,y, label = "esty(t)")
+#plt.plot(t,true_x_array, label = "true x(t)")
+plt.plot(t, true_y_array, label = "true y(t)")
+#plt.plot(t, x, label = "Euler x(t)")
+plt.plot(t,y, label = "curvefit y(t)")
+plt.ylabel("x(t) / meter")
+plt.xlabel("t / sec")
 plt.legend()
-plt.savefig("estimated_vs_true_x(t).png")
+plt.title("y(t)-values given by curve fit(orange)\nvs measured values from tracker (blue)\ndrag coefficient c = 0.006")
+plt.savefig("truevalues_vs_true_y(t).png")
+#plt.savefig("euler_vs_true_x(t).png")
 plt.show()
