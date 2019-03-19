@@ -1,4 +1,6 @@
 import numpy as np
+import iptrack as it
+import matplotlib.pyplot as plt
 
 
 # trvalues - track values
@@ -19,6 +21,8 @@ import numpy as np
 # The slope angle alpha is positive for a curve with a negative derivative.
 # The sign of the radius of the osculating circle is the same as that of
 # the second derivative.
+
+p = it.iptrack("data/45.txt")
 
 
 def trvalues(p,x):

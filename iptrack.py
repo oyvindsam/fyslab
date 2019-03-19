@@ -24,4 +24,12 @@ import numpy as np
 
 def iptrack(filename):
 	data = np.loadtxt(filename, skiprows=2)
-	return data, np.polyfit(data[:,1],data[:,2],15)
+	return np.polyfit(data[:,1] , data[:,2],15)
+
+
+
+def iptrack2(filename):
+	data = np.loadtxt(filename, skiprows=2)
+	return data
+
+
