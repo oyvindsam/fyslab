@@ -161,91 +161,6 @@ if plot_pot_en:
     plt.show()
 
 
-"""plot y,t-graph from time_xcoor_ycoor_i.txt"""
-
-"""
-inputList = [[] for x in range(10)]
-f = open("data/45.txt")
-for line in f.readlines():
-    if(len(inputList[0]) > 2003):
-        continue
-    line = line.strip("\n").split("\t")
-    tempList = []
-    for element in line:
-        tempList.append(float(element))
-    inputList[0].append(tempList)
-f.close()
-f = open("data/46.txt")
-for line in f.readlines():
-    if (len(inputList[1]) > 2003):
-        continue
-    inputList[1].append(line)
-f.close()
-f = open("data/47.txt")
-for line in f.readlines():
-    if (len(inputList[2]) > 2003):
-        continue
-    inputList[2].append(line)
-f.close()
-f = open("data/48.txt")
-for line in f.readlines():
-    if (len(inputList[3]) > 2003):
-        continue
-    inputList[3].append(line)
-f.close()
-f = open("data/49.txt")
-for line in f.readlines():
-    if (len(inputList[4]) > 2003):
-        continue
-    inputList[4].append(line)
-f.close()
-f = open("data/50.txt")
-for line in f.readlines():
-    if (len(inputList[5]) > 2003):
-        continue
-    inputList[5].append(line)
-f.close()
-f = open("data/51.txt")
-for line in f.readlines():
-    if (len(inputList[6]) > 2003):
-        continue
-    inputList[6].append(line)
-f.close()
-f = open("data/52.txt")
-for line in f.readlines():
-    if (len(inputList[7]) > 2003):
-        continue
-    inputList[7].append(line)
-f.close()
-f = open("data/53.txt")
-for line in f.readlines():
-    if (len(inputList[8]) > 2003):
-        continue
-    inputList[8].append(line)
-f.close()
-f = open("data/55.txt")
-for line in f.readlines():
-    if (len(inputList[9]) > 2003):
-        continue
-    inputList[9].append(line)
-f.close()
-
-t = inputList[0][0][1] + inputList[0][0][2]
-print(t)
-
-outputList = []
-outputList.append(inputList[0][0])
-outputList.append(inputList[0][1])
-for i in range(2,2004):
-    sum = 0
-    for j in range(10):
-        sum += inputList[j][i]
-    average = sum / 10
-    outputList[i].append
-"""
-
-
-
 
 
 
@@ -254,15 +169,15 @@ def v_prime(v,c,alpha):
     g = 9.8214675
     return (5/7)*(g*np.sin(alpha) - ((c * v)/m))
 
-def euler(s_n, v_abs, c, poly):
-
+def euler(x_n,y_n, v_abs, c, poly):
     dt = 0.01
     alpha = truevalues.trvalues(poly,x_n)[3]
     v_abs_next = v_abs + dt*((5/7) * v_prime(v_abs,c,alpha))
-    s_next = s_n + dt * v_abs
-    x_next = (s_next * np.cos(alpha))
-    y_next = (s_next * np.sin(alpha))
-    return s_next, v_abs_next
+    vx_next = v_abs_next * np.cos(alpha)
+    vy_next = (v_abs_next * np.sin(alpha)) + ((v_abs**2)/truevalues.trvalues(poly,x_n)[4])
+    x_next = x_n + (dt * (vx_next))
+    y_next = y_n + (dt * vy_next)
+    return x_next, y_next, v_abs_next
 
 
 true_x = []
@@ -287,17 +202,17 @@ f.close()
 true_x_array = np.array(true_x)
 true_y_array = np.array(true_y)
 
-c = 0.009
+c = 0.006
 v_abs_next = 0
 x_next = 0.6445934164187707
-0.5016737029272254
+y_next = 0.5016737029272254
 x_array = []
 y_array = []
 
 tracker_polynomial = iptrack.iptrack("data/45.txt")
 
 for i in range(2000):
-    s_next, v_abs_next = euler(s_next, v_abs_next, c, tracker_polynomial)
+    x_next, y_next, v_abs_next = euler(x_next, y_next, v_abs_next, c, tracker_polynomial)
     x_array.append(x_next)
     y_array.append(y_next)
 x = np.array(x_array)
@@ -351,10 +266,10 @@ f.write("]")
 f.close()
 """
 t = np.linspace(0,20, 2000)
-#plt.plot(t,true_x_array, label = "truex(t)")
-plt.plot(t, true_y_array, label = "truey(t)")
-#plt.plot(t, x, label = "estx(t)")
-plt.plot(t,y, label = "esty(t)")
+plt.plot(t,true_x_array, label = "truex(t)")
+#plt.plot(t, true_y_array, label = "truey(t)")
+plt.plot(t, x, label = "estx(t)")
+#plt.plot(t,y, label = "esty(t)")
 plt.legend()
 plt.savefig("estimated_vs_true_x(t).png")
 plt.show()

@@ -329,13 +329,3 @@ def pot_energy_loss(ydata):
         loss.append(round(m*g*dh, 5))
     return loss
 
-
-
-
-"""calculate avarage loss of pot energy. arguments list of lists containing loss in energy for each oscillation for each test"""
-#avg_heights = avg_top_y_coords(collect_all_tops())
-
-
-"""Error in measurements of loss of potential energy given by gaus error propagatiion law
-error in potential energy
-"""
