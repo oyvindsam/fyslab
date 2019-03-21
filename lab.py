@@ -86,11 +86,24 @@ def euler(coordinates, iptrack, h):
 
         approx = np.append(approx, [(xn, yn)], axis=0)
 
+def potential(coordinates):
+    def mgh(h):
+        return 0.0302 * 9.8214675 * h
+
+    ys = coordinates[:,[1][0]]
+    potentials = []
+    for i in range(1, len(coordinates)):
+        potentials.append(mgh(ys[i-1]) - mgh(ys[i]))
+
+    return potentials
+
+
 if __name__ == "__main__":
     print("whoop \n\n")
 
-    CURVEFIT = True
+    CURVEFIT = False
     EULER = False
+    POTENTIAL = True
     m = 0.0302
 
     data = get_data()
@@ -127,3 +140,14 @@ if __name__ == "__main__":
         approx = euler(maxvalues, iptrack, 0.001)
 
         print(approx)
+
+    if POTENTIAL:
+        for filename in filenames:
+            print(filename)
+            tracker_data = data[filename][0]
+            maxvalues = extract_maxvalues(tracker_data)
+
+            pots = potential(maxvalues)
+            print("potentials: ", pots)
+
+
