@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from fys import euler
 
-from util import euler
 
-
-def force_normal(x_start, poly: np.array, v_start=0, n=40000):
+def force_normal(x_start, poly: np.array, v_start=0, n=20000):
     def force(alpha, v, r, m=0.0302, g=9.8214675):
         return m * g * np.cos(alpha) + m * (v ** 2 / r)
 
