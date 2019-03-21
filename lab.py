@@ -4,7 +4,7 @@ from scipy.optimize import curve_fit
 
 import iptrack as ip
 import truevalues as tv
-
+from forces import force_friction
 
 data_folder = "data/"
 out_folder = "out/"
@@ -15,7 +15,7 @@ def save_data(filename, string):
     f.write(string)
     f.close()
 
-# Returns dict{'filename': (tracker_data: np.array, iptrack: np.array)}
+# Returns dict{'filename': (tracker_data: np.array, polynomial: np.array)}
 def get_data():
     data = {}  # 'filename': string -> (tracker_data, iptrack_data): tuple
     for filename in os.listdir(os.getcwd() + "/" + data_folder):
@@ -74,10 +74,10 @@ def euler(coordinates, iptrack, h):
         tvs = tv.trvalues(iptrack, xn)
         y, dydx, d2ydx2, alpha, R = tvs
 
-
+        h = 0.001
         # TODO: whaaat ----------------------------------
         vn = vn + h*acc(alpha, )
-        xn = xn + abs(vn1) * np.cos(alpha)
+        xn = xn + h * abs(vn1) * np.cos(alpha)
         yn = y + h*dydx
         # -----------------------------------------------
 
@@ -103,11 +103,22 @@ if __name__ == "__main__":
 
     CURVEFIT = False
     EULER = False
-    POTENTIAL = True
+    POTENTIAL = False
+    FORCE = True
     m = 0.0302
 
     data = get_data()
     filenames = data.keys()
+
+    if FORCE:
+        for filename in filenames:
+            print(filename)
+            tracker_data = data[filename][0]
+            polynomial = data[filename][1]
+            x_start = extract_maxvalues(tracker_data)[0][0]
+
+            force_friction(x_start, polynomial)
+            #exit()
 
     if CURVEFIT:
         for filename in filenames:
