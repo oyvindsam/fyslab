@@ -3,8 +3,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 import iptrack as ip
-import truevalues as tv
-from forces import force_friction
+from forces import force_friction, force_normal
 
 data_folder = "data/"
 out_folder = "out/"
@@ -59,32 +58,7 @@ def curvefit(max_cor: np.array):
     fit, covar = curve_fit(curvefit_func, xdata, ydata)
     return fit, covar
 
-def acc(alpha, c, v, m):
-    g = 9.8214675
-    acc = (5/7) * g * np.sin(alpha) - (c * v / m)
-    return acc
 
-def euler(coordinates, iptrack, h):
-    xn = coordinates[0][1]  # startx
-    vn = 0
-
-    approx = np.array([(xn, 0.)])
-
-    for i in range(10):
-        tvs = tv.trvalues(iptrack, xn)
-        y, dydx, d2ydx2, alpha, R = tvs
-
-        h = 0.001
-        # TODO: whaaat ----------------------------------
-        vn = vn + h*acc(alpha, )
-        xn = xn + h * abs(vn1) * np.cos(alpha)
-        yn = y + h*dydx
-        # -----------------------------------------------
-
-        print("\ntvs: ", tvs)
-        print("\nvn1: %s\nxn: %s\nyn: %s" % (vn1, xn, yn))
-
-        approx = np.append(approx, [(xn, yn)], axis=0)
 
 def potential(coordinates):
     def mgh(h):
@@ -104,28 +78,28 @@ if __name__ == "__main__":
     CURVEFIT = False
     EULER = False
     POTENTIAL = False
-    FORCE = True
-    m = 0.0302
+    FORCE = False
+    FORCE_N = True
 
     data = get_data()
     filenames = data.keys()
 
-    if FORCE:
-        for filename in filenames:
-            print(filename)
-            tracker_data = data[filename][0]
-            polynomial = data[filename][1]
-            x_start = extract_maxvalues(tracker_data)[0][0]
+    for filename in filenames:
+        print(filename)
+        tracker_data = data[filename][0]
+        polynomial = data[filename][1]
+        maxvalues = extract_maxvalues(tracker_data)
+        x_start = extract_maxvalues(tracker_data)[0][0]
 
+        if FORCE:
             force_friction(x_start, polynomial)
-            #exit()
+            exit()
 
-    if CURVEFIT:
-        for filename in filenames:
-            print(filename)
-            tracker_data = data[filename][0]
-            maxvalues = extract_maxvalues(tracker_data)
+        if FORCE_N:
+            force_normal(x_start, polynomial)
+            exit()
 
+        if CURVEFIT:
             fit, covar = curvefit(maxvalues)
             #std = np.sqrt(np.diag(covar))
             a, b = fit[0], fit[1]
@@ -141,24 +115,6 @@ if __name__ == "__main__":
 
             save_data(filename + "_curvefit", s)
 
-    if EULER:
-        filename = '51.txt'
-        #for filename in filenames:
-        print(filename)
-        tracker_data = data[filename][0]
-        iptrack = data[filename][1]
-        maxvalues = extract_maxvalues(tracker_data)
-        approx = euler(maxvalues, iptrack, 0.001)
-
-        print(approx)
-
-    if POTENTIAL:
-        for filename in filenames:
-            print(filename)
-            tracker_data = data[filename][0]
-            maxvalues = extract_maxvalues(tracker_data)
-
+        if POTENTIAL:
             pots = potential(maxvalues)
             print("potentials: ", pots)
-
-
