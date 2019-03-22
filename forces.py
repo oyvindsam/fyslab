@@ -17,17 +17,6 @@ def force_normal(x_start, poly: np.array, v_start=0, n=20000):
         fns.append(force(alpha, vn, r))
         xs.append(xn)
 
-    print(fns)
-    t = np.linspace(0, 20, n)
-    plt.figure()
-    plt.title("optimized curve trail ")
-    plt.plot(t, fns, label="fns")
-    plt.plot(t, xs)
-    plt.legend()
-
-    plt.grid()
-    plt.show()
-
     return fns, xs
 
 
