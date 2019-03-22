@@ -26,8 +26,7 @@ def calculate_speed(tracker_data):
                 (delta_x / delta_time) ** 2 +
                 (delta_y / delta_time) ** 2
             )
-
-            speed_list.append(calculated_speed)
+            speed_list.append(np.sign(delta_x)*calculated_speed)
             position_list.append(np.sqrt(
                 (tracker_data[i][1]) ** 2  # x-value squared
                 + (tracker_data[i][2] ** 2  # y-value squared
