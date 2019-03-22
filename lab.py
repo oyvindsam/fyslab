@@ -3,6 +3,8 @@ import numpy as np
 from forces import force_friction, force_normal
 from fys import potential
 from util import get_data, extract_maxvalues, curvefit, save_data, plotData
+from util import get_data, extract_maxvalues, curvefit, save_data
+from speed import calculate_speed, position_speed_numeric, plot_speed
 
 if __name__ == "__main__":
     print("whoop \n\n")
@@ -11,6 +13,8 @@ if __name__ == "__main__":
     EULER = False
     POTENTIAL = False
     FORCE = False
+    FORCE_N = False
+    SPEED = True
     FORCE_N = False
     PLOT_FORCES = True
 
@@ -23,6 +27,15 @@ if __name__ == "__main__":
         polynomial = data[filename][1]
         maxvalues = extract_maxvalues(tracker_data)
         x_start = maxvalues[0][0]
+        y_start = maxvalues[0][1]
+
+        if SPEED:
+            positions, speeds_num, ts = position_speed_numeric(x_start, y_start, polynomial)
+
+            speed_dict = calculate_speed(tracker_data)
+            plot_speed(speed_dict)
+            exit()
+
 
 
         if PLOT_FORCES:

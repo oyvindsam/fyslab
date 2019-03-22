@@ -13,7 +13,7 @@ def force_normal(x_start, poly: np.array, v_start=0, n=20000):
     fns = []
     xs = []
     for i in range(n):
-        xn, vn, acc, alpha, r = euler(xn, vn, poly, dt=dt)
+        xn, vn, acc, alpha, r, y = euler(xn, vn, poly, dt=dt)
         fns.append(force(alpha, vn, r))
         xs.append(xn)
 
@@ -30,7 +30,7 @@ def force_friction(x_start, poly: np.array, v_start=0, n=20000):
     ffs = []
     xs = []
     for i in range(n):
-        xn, vn, acc, alpha, r = euler(xn, vn, poly, dt=dt)
+        xn, vn, acc, alpha, r, y = euler(xn, vn, poly, dt=dt)
         ffs.append(force(acc))
         xs.append(xn)
 
