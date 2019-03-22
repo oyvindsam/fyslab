@@ -1,9 +1,21 @@
 import os
-
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
 
 import iptrack
+
+def plotData(plot_data: dict, title, ylabel, xlabel="tid"):
+    for key, data in plot_data.items():
+        xvalues, yvalues, label = plot_data[key][0], plot_data[key][1], plot_data[key][2]
+        plt.plot(xvalues, yvalues, label=label)
+
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+    plt.legend()
+    plt.title(title)
+    # plt.savefig("title")
+    plt.show()
 
 
 def save_data(filename, string, out_folder="out/"):
