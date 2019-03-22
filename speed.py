@@ -9,7 +9,7 @@ def calculate_speed(tracker_data):
 
     for i in range(len(tracker_data)):
         if i == 0:
-            speed_list.append(tracker_data[i][0])
+            speed_list.append(0)
             time_list.append(tracker_data[i][0])
             position_list.append(np.sqrt(
                 (tracker_data[i][1]) ** 2  # x-value squared
@@ -32,18 +32,27 @@ def calculate_speed(tracker_data):
                    )))
             time_list.append(tracker_data[i][0])
 
-    speed = {
+    speed_dict = {
         "time": time_list,
         "position": position_list,
         "speed": speed_list
     }
 
-    print(speed["time"], "\n", speed["position"], "\n", speed["speed"])
+    print(speed_dict["time"], "\n", speed_dict["position"], "\n", speed_dict["speed"])
 
-    plt.plot(speed["time"], speed["position"], label="p(t)")
-    plt.plot(speed["time"], speed["speed"], label="v(t)")
+    return speed_dict
+
+def plot_speed(speed_dict):
+    plt.plot(speed_dict["time"], speed_dict["position"], label="p(t)")
     plt.legend()
-    plt.savefig("speed_time_position.png")
+    plt.xlabel("tid t [s]")
+    plt.ylabel("distanse fra origo [m]")
+    plt.savefig("time_position.png")
     plt.show()
 
-    return speed
+    plt.plot(speed_dict["time"], speed_dict["speed"], label="v(t)")
+    plt.legend()
+    plt.xlabel("tid t [s]")
+    plt.ylabel("fart v m/s")
+    plt.savefig("time_speed.png")
+    plt.show()

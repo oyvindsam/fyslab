@@ -1,7 +1,7 @@
 from forces import force_friction, force_normal
 from fys import potential
 from util import get_data, extract_maxvalues, curvefit, save_data
-from speed import calculate_speed
+from speed import calculate_speed, plot_speed
 
 if __name__ == "__main__":
     print("whoop \n\n")
@@ -24,7 +24,8 @@ if __name__ == "__main__":
         x_start = maxvalues[0][0]
 
         if SPEED:
-            calculate_speed(tracker_data)
+            speed_dict = calculate_speed(tracker_data)
+            plot_speed(speed_dict)
             exit()
 
 
