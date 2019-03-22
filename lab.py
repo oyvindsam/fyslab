@@ -32,10 +32,10 @@ if __name__ == "__main__":
             t = np.linspace(0, 20, n)
 
             d = {
-                1: [t, ffs, "friksjonskraft f [Nm]"],
-                2: [t, fns, "Normalkraft N [Nm]"]
+                1: [t, ffs, "friksjonskraft f"],
+                2: [t, fns, "normalkraft N"]
             }
-            plotData(d, "Krefter", "N/m", "tid t [s]")
+            plotData(d, "Kraft", "kraft [N]", "tid t [s]")
             exit()
 
         if FORCE:

@@ -13,8 +13,8 @@ def plotData(plot_data: dict, title, ylabel, xlabel="tid"):
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)
     plt.legend()
-    plt.title(title)
-    # plt.savefig("title")
+    #plt.title(title)
+    plt.savefig(title)
     plt.show()
 
 
