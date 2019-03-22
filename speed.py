@@ -59,21 +59,22 @@ def plot_speed(speed_dict):
     plt.savefig("time_speed.png")
     plt.show()
 
-    return speed
+    #return speed
 
 
 def position_speed_numeric(x_start, y_start, poly: np.array, v_start=0, n=20000):
     xn, vn = x_start, v_start
-    x_prev, y_prev = x_start, v_start
+    x_prev, y_prev = x_start, y_start
+    print(x_prev, y_prev)
     dt = 20 / n
-    speeds = [x_start]
+    speeds = []
     positions = []
-    ts = [ni/n for ni in range(n)]
+    ts = np.linspace(0, 20, n)
+
     for i in range(n):
         xn, vn, acc, alpha, r, y = euler(xn, vn, poly, dt=dt)
-        positions.append(np.sqrt(
-                (x_prev - xn) ** dt + (y_prev - y) ** 2
-            ))
+        positions.append(np.sqrt(xn ** 2 + y ** 2))
         speeds.append(vn)
+        #x_prev, y_prev = xn, y
 
     return positions, speeds, ts

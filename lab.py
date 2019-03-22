@@ -15,8 +15,7 @@ if __name__ == "__main__":
     FORCE = False
     FORCE_N = False
     SPEED = True
-    FORCE_N = False
-    PLOT_FORCES = True
+    PLOT_FORCES = False
 
     data = get_data()
     filenames = data.keys()
@@ -32,10 +31,24 @@ if __name__ == "__main__":
         if SPEED:
             positions, speeds_num, ts = position_speed_numeric(x_start, y_start, polynomial)
 
-            speed_dict = calculate_speed(tracker_data)
-            plot_speed(speed_dict)
-            exit()
+            #speed_dict = calculate_speed(tracker_data)
+            #plot_speed(speed_dict)
 
+            ds = {
+                1: [ts, speeds_num, "fart numerisk"]
+            }
+
+            plotData(ds, "Fart", "fart v [m/s]")
+
+            dp = {
+                1: [ts, positions, "posisjon numerisk"]
+            }
+
+            print("posisjon: ", positions)
+            plotData(dp, "Posisjon", "strekning [s/t]")
+
+
+            exit()
 
 
         if PLOT_FORCES:
