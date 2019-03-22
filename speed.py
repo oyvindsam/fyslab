@@ -34,15 +34,8 @@ def calculate_speed(tracker_data):
                    )))
             time_list.append(tracker_data[i][0])
 
-    speed_dict = {
-        "time": time_list,
-        "position": position_list,
-        "speed": speed_list
-    }
+    return position_list, speed_list, time_list
 
-    print(speed_dict["time"], "\n", speed_dict["position"], "\n", speed_dict["speed"])
-
-    return speed_dict
 
 def plot_speed(speed_dict):
     plt.plot(speed_dict["time"], speed_dict["position"], label="p(t)")
