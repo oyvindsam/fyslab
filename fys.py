@@ -7,7 +7,7 @@ def euler(x, v, poly, dt):
     acc = v_prime(v, alpha)
     vn = v + dt * acc
     xn = x + dt * v * np.cos(alpha)
-    return xn, vn, acc, alpha, r
+    return xn, vn, acc, alpha, r, y
 
 
 def v_prime(v, alpha, c=0.0041, m=0.0302, g=9.8214675):

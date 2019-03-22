@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from fys import euler
+
 
 def calculate_speed(tracker_data):
     time_list = []
@@ -56,3 +58,22 @@ def plot_speed(speed_dict):
     plt.ylabel("fart v m/s")
     plt.savefig("time_speed.png")
     plt.show()
+
+    return speed
+
+
+def position_speed_numeric(x_start, y_start, poly: np.array, v_start=0, n=20000):
+    xn, vn = x_start, v_start
+    x_prev, y_prev = x_start, v_start
+    dt = 20 / n
+    speeds = [x_start]
+    positions = []
+    ts = [ni/n for ni in range(n)]
+    for i in range(n):
+        xn, vn, acc, alpha, r, y = euler(xn, vn, poly, dt=dt)
+        positions.append(np.sqrt(
+                (x_prev - xn) ** dt + (y_prev - y) ** 2
+            ))
+        speeds.append(vn)
+
+    return positions, speeds, ts
