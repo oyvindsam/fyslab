@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 
 import iptrack
 
-def plotData(plot_data: dict, title, ylabel, xlabel="tid"):
+def plotData(plot_data: dict, title, ylabel, xlabel="tid t [s]"):
     for key, data in plot_data.items():
         xvalues, yvalues, label = plot_data[key][0], plot_data[key][1], plot_data[key][2]
         plt.plot(xvalues, yvalues, label=label)

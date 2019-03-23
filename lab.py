@@ -29,32 +29,26 @@ if __name__ == "__main__":
         y_start = maxvalues[0][1]
 
         if SPEED:
-            if filename != '45.txt':
+            if filename != '45.txt':  # 45.txt gives weird results
                 pos_num, speeds_num, ts_num = position_speed_numeric(x_start, y_start, polynomial)
                 pos_tr, speeds_tr, ts_length = calculate_speed(tracker_data)
 
-                pos_num = pos_num[::round(len(pos_num)/len(pos_tr))]
+                pos_num = pos_num[::round(len(pos_num)/len(pos_tr))]  # extract same numer of x values from numeric
                 speeds_num = speeds_num[::round(len(speeds_num)/len(speeds_tr))]
 
-                print(len(pos_num))
-                print(len(speeds_num))
-
-                print(len(pos_tr))
-                print(len(speeds_tr))
+                # values in dictionary are arguments for plotData: [x-axis, y-axis, splot-label]
                 ds = {
                     1: [ts_length, speeds_num, "fart numerisk"],
                     2: [ts_length, speeds_tr, "fart reell"]
                 }
-
-                plotData(ds, "Hastighet", "hastighet v [m/s]")
 
                 dp = {
                     1: [ts_length, pos_num, "posisjon numerisk"],
                     2: [ts_length, pos_tr, "posisjon reell"]
                 }
 
-                plotData(dp, "Posisjon", "posisjon [m]")
-
+                plotData(ds, title="Hastighet", ylabel="hastighet v [m/s]")
+                plotData(dp, title="Posisjon", ylabel="posisjon [m]")
 
                 exit()
 
