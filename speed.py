@@ -9,7 +9,7 @@ def calculate_speed(tracker_data):
     position_list = []
     speed_list = []
 
-    for i in range(2000):
+    for i in range(len(tracker_data)):
         if i == 0:
             speed_list.append(0)
             time_list.append(tracker_data[i][0])
