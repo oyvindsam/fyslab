@@ -62,9 +62,9 @@ def extract_maxvalues(coordinates: np.array):
     max_index = np.argmax(np.max(data[:15, [2]], axis=1))
     x_max, y_max = data[max_index][1], data[max_index][2]
     max_cor = np.array([(x_max, y_max)])  # initialize array
-
+    buffer = 5
     # we already have the highest coordinates, so just start at index 20.
-    for i in range(20, len(data)-1):
-        if checkrange(data, 5, i):
+    for i in range(20, len(data) - buffer):
+        if checkrange(data, buffer, i):
             max_cor = np.append(max_cor, [(data[i][1], data[i][2])], axis=0)
     return max_cor
