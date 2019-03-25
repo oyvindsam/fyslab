@@ -14,8 +14,8 @@ if __name__ == "__main__":
     POTENTIAL = False
     FORCE = False
     FORCE_N = False
-    SPEED = True
-    PLOT_FORCES = False
+    SPEED = False
+    PLOT_FORCES = True
 
     data = get_data()
     filenames = data.keys()
@@ -24,6 +24,7 @@ if __name__ == "__main__":
         print(filename)
         tracker_data = data[filename][0]
         polynomial = data[filename][1]
+        print(len(tracker_data))
         maxvalues = extract_maxvalues(tracker_data)
         x_start = maxvalues[0][0]
         y_start = maxvalues[0][1]
@@ -54,17 +55,29 @@ if __name__ == "__main__":
 
 
         if PLOT_FORCES:
-            n = 20000
-            ffs, xsf = force_friction(x_start, polynomial, n=n)
-            fns, xsn = force_normal(x_start, polynomial, n=n)
-            t = np.linspace(0, 20, n)
+            if filename != '45.txt':  # 45.txt gives weird results
 
-            d = {
-                1: [t, ffs, "friksjonskraft f"],
-                2: [t, fns, "normalkraft N"]
-            }
-            plotData(d, "Kraft", "kraft [N]", "tid t [s]")
-            exit()
+                n = 20000
+                ffs, xsf = force_friction(x_start, polynomial, n=n)
+                fns, xsn = force_normal(x_start, polynomial, n=n)
+                t = np.linspace(0, 20, n)
+
+                # values in dictionary are arguments for plotData: [x-axis, y-axis, splot-label]
+                # meters from origo as x-axis
+                dt = {
+                    1: [xsf, ffs, "friksjonskraft f"],
+                    2: [xsf, fns, "normalkraft N"]
+                }
+
+                # time as x-axis
+                dx = {
+                    1: [t, ffs, "friksjonskraft f"],
+                    2: [t, fns, "normalkraft N"]
+                }
+
+                plotData(dt, "Kraft-x", "kraft [N]", "tid t [s]")
+                plotData(dx, "Kraft-x", "kraft [N]", "posisjon x-akse [m]")
+                exit()
 
         if FORCE:
             force_friction(x_start, polynomial)
