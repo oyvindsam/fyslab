@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.optimize import curve_fit
+
 import truevalues
 
 
@@ -14,13 +16,33 @@ def v_prime(v, alpha, c=0.0041, m=0.0302, g=9.8214675):
     return (5/7) * (g * np.sin(alpha) - (c * v) / m)
 
 
-def potential(coordinates):
+def potential(max_cor: np.array, pot_delta):
     def mgh(h):
         return 0.0302 * 9.8214675 * h
 
-    ys = coordinates[:,[1][0]]
+    ts, ys = max_cor[:, [0]].flatten(), max_cor[:, [2]].flatten()
     potentials = []
-    for i in range(1, len(coordinates)):
-        potentials.append(mgh(ys[i-1]) - mgh(ys[i]))
+    for i in range(0, len(max_cor)):
+        if pot_delta:
+            potentials.append((ts[i+1], mgh(ys[i]) - mgh(ys[i])))
+        else:
+            potentials.append((ts[i], mgh(ys[i])))
 
-    return potentials
+    return np.array(potentials)
+
+
+
+def half_life(pot_energy:np.array):
+    xdata, ydata = pot_energy[:,[0]].flatten(), pot_energy[:,[1]].flatten()  # time, potential energy
+    p_init = ydata[0]
+
+    def half_func(time: np.array, t_half):
+        f = p_init * (1 / 2) ** (time / t_half)
+        return f
+
+    fit, covar = curve_fit(half_func, xdata, ydata)
+
+    return fit, covar
+
+
+#def gauss_pot(heights, )

@@ -5,10 +5,16 @@ from scipy.optimize import curve_fit
 
 import iptrack
 
-def plotData(plot_data: dict, title, ylabel, xlabel="tid t [s]"):
+def plotData(plot_data: dict, title, ylabel, xlabel="tid t [s]", plot_type='normal'):
     for key, data in plot_data.items():
         xvalues, yvalues, label = plot_data[key][0], plot_data[key][1], plot_data[key][2]
-        plt.plot(xvalues, yvalues, label=label)
+        if plot_type == 'normal':
+            plt.plot(xvalues, yvalues, label=label)
+        elif plot_type == 'scatter':
+            if key == 'hack':
+                plt.plot(xvalues, yvalues, label=label)
+            else:
+                plt.scatter(xvalues, yvalues, label=label)
 
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)
@@ -61,7 +67,7 @@ def extract_maxvalues(coordinates: np.array):
     # get the index of the point with the highest y-value in the first 15 elements
     max_index = np.argmax(np.max(data[:15, [2]], axis=1))
     t_max, x_max, y_max = data[max_index][0], data[max_index][1], data[max_index][2]
-    max_cor = np.array([(x_max, y_max)])  # initialize array
+    max_cor = np.array([(t_max, x_max, y_max)])  # initialize array
     buffer = 5
     # we already have the highest coordinates, so just start at index 20.
     for i in range(20, len(data) - buffer):
