@@ -39,7 +39,7 @@ def curvefit(max_cor: np.array):
         return a * np.exp(-b * x_max)
 
     # covert x- and y-values to 1 dim arrays
-    xdata, ydata = max_cor[:,[0]].flatten(), max_cor[:,[1]].flatten()
+    xdata, ydata = max_cor[:,[1]].flatten(), max_cor[:,[2]].flatten()
 
     # use scipy function. values in fit corresponds to 'a' and 'b' in curvefit_func()
     fit, covar = curve_fit(curvefit_func, xdata, ydata)
@@ -60,11 +60,11 @@ def extract_maxvalues(coordinates: np.array):
 
     # get the index of the point with the highest y-value in the first 15 elements
     max_index = np.argmax(np.max(data[:15, [2]], axis=1))
-    x_max, y_max = data[max_index][1], data[max_index][2]
+    t_max, x_max, y_max = data[max_index][0], data[max_index][1], data[max_index][2]
     max_cor = np.array([(x_max, y_max)])  # initialize array
     buffer = 5
     # we already have the highest coordinates, so just start at index 20.
     for i in range(20, len(data) - buffer):
         if checkrange(data, buffer, i):
-            max_cor = np.append(max_cor, [(data[i][1], data[i][2])], axis=0)
+            max_cor = np.append(max_cor, [(data[i][0], data[i][1], data[i][2])], axis=0)
     return max_cor

@@ -25,9 +25,10 @@ if __name__ == "__main__":
         tracker_data = data[filename][0]
         polynomial = data[filename][1]
         print(len(tracker_data))
-        maxvalues = extract_maxvalues(tracker_data)
-        x_start = maxvalues[0][0]
-        y_start = maxvalues[0][1]
+        maxvalues = extract_maxvalues(tracker_data) # obs. maxvalues has t-max, x-max, y-max
+        t_start = maxvalues[0][0]
+        x_start = maxvalues[0][1]
+        y_start = maxvalues[0][2]
 
         if SPEED:
             if filename != '45.txt':  # 45.txt gives weird results
