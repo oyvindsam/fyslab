@@ -12,7 +12,10 @@ from speed import calculate_speed, position_speed_numeric, plot_speed
 if __name__ == "__main__":
     print("whoop \n\n")
 
-    CURVEFIT = False
+    m = 0.0302
+    g = 9.8214675
+
+    CURVEFIT = True
     EULER = False
     POTENTIAL_DELTA = False
     POTENTIAL_MAX = True
@@ -117,7 +120,7 @@ if __name__ == "__main__":
             print("\n\nA: %s\nb: %s\nc: %s " % (fit[0], fit[1], c))
             print("covar: ", covar.__str__())
 
-            save_data(filename + "_curvefit", s)
+            #save_data(filename + "_curvefit", s)
 
         if POTENTIAL_DELTA:
             potetial_energies = potential(maxvalues, True)

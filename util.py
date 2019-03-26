@@ -45,7 +45,7 @@ def curvefit(max_cor: np.array):
         return a * np.exp(-b * x_max)
 
     # covert x- and y-values to 1 dim arrays
-    xdata, ydata = max_cor[:,[1]].flatten(), max_cor[:,[2]].flatten()
+    xdata, ydata = max_cor[:,[0]].flatten(), max_cor[:,[2]].flatten()
 
     # use scipy function. values in fit corresponds to 'a' and 'b' in curvefit_func()
     fit, covar = curve_fit(curvefit_func, xdata, ydata)
