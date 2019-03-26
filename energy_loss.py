@@ -332,8 +332,8 @@ def Euler_and_plot(filename,n):
     #plt.savefig("euler_vs_true_x(t).png")
     plt.show()
 
-Euler_and_plot("data/55.txt", 10000)
+#Euler_and_plot("data/55.txt", 10000)
 """finn ett standardavvik for b"""
-#perr = np.sqrt(np.diag([8.8070832e-07]))
-#print(perr)
+perr = np.sqrt(np.diag([8.8070832e-07]))
+print(perr)
 
