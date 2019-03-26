@@ -14,11 +14,13 @@ if __name__ == "__main__":
 
     m = 0.0302
     g = 9.8214675
+    b_std = 0.0022202776353270883
+
 
     CURVEFIT = True
     EULER = False
     POTENTIAL_DELTA = False
-    POTENTIAL_MAX = True
+    POTENTIAL_MAX = False
     FORCE = False
     FORCE_N = False
     SPEED = False
@@ -30,8 +32,11 @@ if __name__ == "__main__":
     filenames = data.keys()
 
     half_rate = []
-
     heights = [[] for x in range(21)]
+    bs_curvefit = []
+    cs_curvefit = []
+    cs_error = []
+
 
     for filename in filenames:
         print(filename)
@@ -113,14 +118,10 @@ if __name__ == "__main__":
 
             c = 2*m*b
 
-            s = """%s\na: %s\nb: %s\nc: %s\ncovar: %s 
-            
-            """ % (filename, a, b, c, covar)
+            bs_curvefit.append(b)
+            cs_curvefit.append(c)
+            cs_error.append(np.sqrt((2*b*0.0001)**2 + (2*m*b_std)**2))
 
-            print("\n\nA: %s\nb: %s\nc: %s " % (fit[0], fit[1], c))
-            print("covar: ", covar.__str__())
-
-            #save_data(filename + "_curvefit", s)
 
         if POTENTIAL_DELTA:
             potetial_energies = potential(maxvalues, True)
@@ -165,7 +166,18 @@ if __name__ == "__main__":
 
         print("std_errors: ", std_heights)
 
+    if CURVEFIT:
+        bs_curvefit = np.array(bs_curvefit)
+        cs_curvefit = np.array(cs_curvefit)
+        b_std = np.std(bs_curvefit)
+        c_avg = np.average(cs_curvefit)
+        c_std_error = np.std(cs_curvefit) / np.sqrt(len(cs_curvefit))
 
+        print(b_std)
+
+        print("cs: ", cs_curvefit)
+        print("cs_error: ", cs_error)
+        print("c_avg: %s, c_std_error %s" % (c_avg, c_std_error))
 
     if NICE_DATA:
         """
