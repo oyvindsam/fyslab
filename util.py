@@ -11,7 +11,7 @@ def plotData(plot_data: dict, title, ylabel, xlabel="tid t [s]", plot_type='norm
         if plot_type == 'normal':
             plt.plot(xvalues, yvalues, label=label)
         elif plot_type == 'scatter':
-            if key == 'hack':
+            if key == 'kurve':
                 plt.plot(xvalues, yvalues, label=label)
             else:
                 plt.scatter(xvalues, yvalues, label=label)

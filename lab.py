@@ -15,12 +15,12 @@ if __name__ == "__main__":
     CURVEFIT = False
     EULER = False
     POTENTIAL_DELTA = False
-    POTENTIAL_MAX = False
+    POTENTIAL_MAX = True
     FORCE = False
     FORCE_N = False
     SPEED = False
     PLOT_FORCES = False
-    HEIGHT_MEASUREMENTS = True
+    HEIGHT_MEASUREMENTS = False
     NICE_DATA = False
 
     data = get_data()
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         t_start = maxvalues[0][0]
         x_start = maxvalues[0][1]
         y_start = maxvalues[0][2]
-
+        #gjennsomsnitt halveringstid
 
         # add height measurements
         for i in range(len(maxvalues)):
@@ -140,11 +140,11 @@ if __name__ == "__main__":
                 #print(half_times)
                 # time as x-axis
                 d_pot = {
-                    1: [pots_time, pots_max, "halveringstid t"],
-                    'hack': [pots_time, half_times, "halveringstid x"],
+                    1: [pots_time, pots_max, "potensiell energi réell"],
+                    'kurve': [pots_time, half_times, "potensiell energi analystisk"],
                 }
 
-                #plotData(d_pot, "Halveringstid", "halvering rate", "tid t [s]", plot_type='scatter')
+                #plotData(d_pot, "Potensiell energi", "potensiell energi J [J]", "tid t [s]", plot_type='scatter')
 
                 half_rate.append(fit[0])
 
@@ -152,9 +152,8 @@ if __name__ == "__main__":
 
     if POTENTIAL_MAX:
         half_rate = np.array(half_rate)
-        print("Half rate ", half_rate)
-
-        print("std: ", np.std(half_rate))
+        print("Half life ", half_rate)
+        print("std error: ", np.std(half_rate) / len(half_rate))
         print("average :", np.average(half_rate))
 
     if HEIGHT_MEASUREMENTS:
