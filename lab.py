@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
 
 import iptrack as ip
 import truevalues as tv
@@ -46,9 +47,6 @@ def extract_x_y_time(filename, t = False, x = False, y = False):
 
 
 
-for value in (extract_x_y_time("data/45.txt",False,False,True)):
-    print(value)
-
 
 def save_data(filename, string):
     f = open(out_folder + filename, "w+")
@@ -78,14 +76,17 @@ def extract_maxvalues(coordinates: np.array):
 
     # get the index of the point with the highest y-value in the first 15 elements
     max_index = np.argmax(np.max(data[:15, [2]], axis=1))
-    t_max, y_max = data[max_index][0], data[max_index][2]
+    t_max, x_max, y_max = data[max_index][0],data[max_index][1], data[max_index][2]
     max_cor = np.array([(t_max, y_max)])  # initialize array
 
     # we already have the highest coordinates, so just start at index 20.
     for i in range(20, len(data)-1):
         if checkrange(data, 5, i):
-            max_cor = np.append(max_cor, [(data[i][0], data[i][1])], axis=0)
+            max_cor = np.append(max_cor, [(data[i][0], data[i][1]), data[i][2]], axis=0)
     return max_cor
+
+print(extract_maxvalues("data/45.txt"))
+
 
 """
 data = get_data()
@@ -112,6 +113,7 @@ def curvefit(max_cor: np.array):
     # use scipy function. values in fit corresponds to 'a' and 'b' in curvefit_func()
     fit, covar = curve_fit(curvefit_func, xdata, ydata)
     return fit, covar
+
 
 def acc(alpha, c, v, m):
     g = 9.8214675
@@ -196,12 +198,15 @@ if __name__ == "__main__":
 # From one trail: creates a list of y-coordiantes for the top point of each oscillation
 # returns list of heights: [height_of_oscillation1, height_of_oscillation2, ...]
 def get_data(filename):
-    ys = []                                 # will store coordinates
+    ys = []        # will store coordinates
+    xs = []
     f = open("out/" + filename, "r")
     l = f.readlines()
     for element in l:
-        ys.append(round(float(element[15:25]), 5))   # character 15-25 on each line is y-coordinate
+        ys.append(round(float(element[15:25]), 5)) # character 15-25 on each line is y-coordinate
+        xs.append
     return ys
+
 
 
 # returns list containing data from each trail of experiment: [trail1, trail2, trail3...]
@@ -214,6 +219,8 @@ def collect_all_tops():
             top = get_data(filename)
             list_of_tops.append(top)
     return list_of_tops
+
+
 
 
 """calculate average height of each top point in all trails of experiment"""
@@ -310,14 +317,17 @@ def calculate_pot_energy(ydata, ydata_errors = None, energies = False, errors = 
         return pot_energies
     if errors:
         pot_energies_error = []
-        for i in range(len(ydata_errors)):
+        for i in range(len(ydata)):
             """error = sqrt((h*g*(m_error))² + (m*h*(g_error))² + (m*g*(h_error))²)"""
             error = round(np.sqrt((ydata[i] * g * m_error)**2 +
                             (ydata[i] * m * g_error)**2 +
-                            (m * g * ydata_errors[i])**2), 5)
+                            (m * g * 0.01)**2), 5)
             pot_energies_error.append(error)
             print(error)
         return pot_energies_error
+#pot_energy = calculate_pot_energy(avg_top_y_coords(collect_all_tops()), energies=True)
+#pot_energy_error = calculate_pot_energy(avg_top_y_coords(collect_all_tops()),errors=True)
+
 
 
 #loss of potential energy by taking mg(h_n-1 - h_n)
@@ -329,3 +339,76 @@ def pot_energy_loss(ydata):
         loss.append(round(m*g*dh, 5))
     return loss
 
+
+#plt.plot(pot_energies, np.poly1d(np.polyfit(times,pot_energies, 1))(pot_energies))
+#plt.show()
+
+
+"""regn ut gjennomsnittlig tap av potensiell energi for hver oscillasjon"""
+tops = collect_all_tops()
+m = 0.0302
+g = 9.8214675
+def all_potential_energies(tops):
+    potential_energies = [[] for i in range(len(tops))]
+    for trail in range(len(tops)):
+        for top in range(len(tops[trail])):
+            potential_energies[trail].append(tops[trail][top] * m * g)
+
+    return potential_energies
+
+all_potential_energies = all_potential_energies(tops)
+print("alle potensielle energier: " + str(all_potential_energies))
+
+def all_pot_energy_loss(all_potential_energies):
+    losses = [[] for i in range(len(all_potential_energies))]
+    for list in range(len(all_potential_energies)):
+        for pot_en in range(len(all_potential_energies[list]) - 1):
+            losses[list].append(all_potential_energies[list][pot_en] - all_potential_energies[list][pot_en + 1])
+    return losses
+all_losses = all_pot_energy_loss(all_potential_energies)
+print("alle tap av potensielle energier: " + str(all_losses))
+
+def avg_pot_loss(all_losses):
+    avg_losses = []
+    for top in range(len(all_losses[0])):
+        sum = 0
+        for trail in range(len(all_losses)):
+            sum += all_losses[trail][top]
+        avg_losses.append(sum/len(all_losses))
+    return avg_losses
+avg_losses = avg_pot_loss(all_losses)
+print("gjennomsnittlig tap av potensiell energi: " + str(avg_losses))
+
+
+def std_avvik_pot_energi(list_of_all_losses, list_of_avg_losses):
+    standard_deviations = []
+    number_of_tops = len(list_of_all_losses[0])
+    for loss in range(number_of_tops):
+        sum_of_mean_dev_squared = 0
+        for trail in range(len(list_of_all_losses)):
+            sum_of_mean_dev_squared += (list_of_all_losses[trail][loss] - list_of_avg_losses[trail])**2
+        standard_deviations.append(round(np.sqrt(sum_of_mean_dev_squared/9), 5))
+    return standard_deviations
+standard_dev_pot_en_loss = std_avvik_pot_energi(all_losses,avg_losses)
+print("standardavvik for tap av potensiell energi: " + str(standard_dev_pot_en_loss))
+print(len(standard_dev_pot_en_loss))
+
+"""
+    for top in range(len(tops[0]) - 1):
+        sum = 0
+        list_of_losses.append([])
+        for list in range(0, len(tops)):
+            pot_en_loss = ((tops[list][top] - tops[list][top + 1]) * m * g)
+            list_of_losses[-1].append(pot_en_loss)
+            sum += pot_en_loss
+        avg_loss.append(sum/len(tops))
+print(tops)
+print(avg_loss)
+print(len(avg_loss))
+print(list_of_losses)
+print(len(list_of_losses))
+print(len(list_of_losses[0]))
+
+pot_en_loss_standard_dev = []
+
+"""
